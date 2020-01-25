@@ -1,0 +1,398 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard\sa200\sl276\slmult1\lang9\f0\fs22 Installing Angular CLI\par
+Let\rquote s start by installing the latest version of Angular CLI. In your terminal, run the following command:\par
+\par
+$ npm install -g @angular/cli\par
+Copy\par
+At the time writing, v7.0.3 of Angular CLI is installed. If you have the CLI already installed, you can make sure you have the latest version by using this command:\par
+\par
+$ ng --version\par
+Copy\par
+Creating A Project\par
+Once you have Angular CLI installed, let\rquote s use it to generate an Angular 7 project by running the following command:\par
+\par
+$ ng new angular-bootstrap-demo\par
+Copy\par
+The CLI will then ask you:\par
+\par
+Would you like to add Angular routing?\par
+Press Y. Next, it will ask you:\par
+\par
+Which stylesheet format would you like to use?\par
+Choose \ldblquote CSS\rdblquote .\par
+\par
+Adding Bootstrap\par
+After creating the project, you need to install Bootstrap 4 and integrate it with your Angular project.\par
+\par
+First, navigate inside your project\rquote s root folder:\par
+\par
+$ cd angular-bootstrap-demo\par
+Copy\par
+Next, install Bootstrap 4 and jQuery from npm:\par
+\par
+$ npm install --save bootstrap jquery\par
+Copy\par
+(In this case, bootstrap v4.2.1 and jquery v3.3.1 are installed.)\par
+\par
+Finally, open the angular.json file and add the file paths of Bootstrap CSS and JS files as well as jQuery to the styles and scripts arrays under the build target:\par
+\par
+"architect": \{\par
+  "build": \{\par
+    [...], \par
+    "styles": [\par
+      "src/styles.css", \par
+        "node_modules/bootstrap/dist/css/bootstrap.min.css"\par
+      ],\par
+      "scripts": [\par
+        "node_modules/jquery/dist/jquery.min.js",\par
+        "node_modules/bootstrap/dist/js/bootstrap.min.js"\par
+      ]\par
+    \},\par
+Copy\par
+Check out how to add Bootstrap to an Angular 6 project for options on how to integrate Bootstrap with Angular.\par
+\par
+Adding A Data Service\par
+After creating a project and adding Bootstrap 4, we\rquote ll create an Angular service that will be used to provide some demo data to display in our application.\par
+\par
+In your terminal, run the following command to generate a service:\par
+\par
+$ ng generate service data\par
+Copy\par
+This will create two src/app/data.service.spec.ts and src/app/data.service.ts files.\par
+\par
+Open src/app/data.service.ts and replace its contents with the following:\par
+\par
+import \{ Injectable \} from '@angular/core';\par
+\par
+@Injectable(\{\par
+  providedIn: 'root'\par
+\})\par
+export class DataService \{\par
+\par
+  contacts = [\par
+    \{id: 1, name: "Contact 001", description: "Contact 001 des", email: "c001@email.com"\},\par
+    \{id: 2, name: "Contact 002", description: "Contact 002 des", email: "c002@email.com"\},\par
+    \{id: 3, name: "Contact 003", description: "Contact 003 des", email: "c003@email.com"\},\par
+    \{id: 4, name: "Contact 004", description: "Contact 004 des", email: "c004@email.com"\}\par
+  ];\par
+\par
+  constructor() \{ \}\par
+\par
+  public getContacts():Array<\{id, name, description, email\}>\{\par
+    return this.contacts;\par
+  \}\par
+  public createContact(contact: \{id, name, description, email\})\{\par
+    this.contacts.push(contact);\par
+  \}\par
+\}\par
+Copy\par
+We add a contacts array with some demo contacts, a getContacts() method which returns the contacts and a createContact() which append a new contact to the contacts array.\par
+\par
+Adding Components\par
+After creating the data service, next we need to create some components for our application. In your terminal, run:\par
+\par
+$ ng generate component home\par
+$ ng generate component contact-create\par
+$ ng generate component contact-list\par
+Copy\par
+Next, we\rquote ll add these components to the routing module to enable navigation in our application. Open the src/app/app-routing.module.ts file and replace its contents with the following:\par
+\par
+import \{ NgModule \} from '@angular/core';\par
+import \{ Routes, RouterModule \} from '@angular/router';\par
+import \{ ContactListComponent \} from './contact-list/contact-list.component';\par
+import \{ ContactCreateComponent \} from './contact-create/contact-create.component';\par
+import \{ HomeComponent \} from './home/home.component';\par
+\par
+const routes: Routes = [\par
+  \{path:  "", pathMatch:  "full",redirectTo:  "home"\},\par
+  \{path: "home", component: HomeComponent\},\par
+  \{path: "contact-create", component: ContactCreateComponent\},\par
+  \{path: "contact-list", component: ContactListComponent\}  \par
+];\par
+\par
+@NgModule(\{\par
+  imports: [RouterModule.forRoot(routes)],\par
+  exports: [RouterModule]\par
+\})\par
+export class AppRoutingModule \{ \}\par
+Copy\par
+We use the redirectTo property of the router\rquote s path to redirect users to the home page when they visit our application.\par
+\par
+Adding Header And Footer Components\par
+Next, let\rquote s create the header and footer components:\par
+\par
+$ ng generate component header\par
+$ ng generate component footer\par
+Copy\par
+Open the src/app/header/header.component.html file and add the following code:\par
+\par
+<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">\par
+  <a class="navbar-brand" href="#">Angular Bootstrap Demo</a>\par
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"\par
+    aria-expanded="false" aria-label="Toggle navigation">\par
+    <span class="navbar-toggler-icon"></span>\par
+  </button>\par
+  <div class="collapse navbar-collapse" id="navbarCollapse">\par
+    <ul class="navbar-nav mr-auto">\par
+\par
+      <li class="nav-item">\par
+        <a class="nav-link" routerLink="/home">Home</a>\par
+      </li>\par
+      <li class="nav-item">\par
+        <a class="nav-link" routerLink="/contact-list">Contacts</a>\par
+      </li>\par
+      <li class="nav-item">\par
+        <a class="nav-link" routerLink="/contact-create">Create</a>\par
+      </li>\par
+\par
+    </ul>\par
+  </div>\par
+</nav>\par
+Copy\par
+A navigation bar will be created with Bootstrap 4, and we\rquote ll use the routerLink directive to link to different components.\par
+\par
+Use the .navbar, .navbar-expand\{-sm|-md|-lg|-xl\} and .navbar-dark classes to create Bootstrap navigation bars. (For more information about nav bars, check out Bootstrap\rquote s documentation on \ldblquote Navbar\rdblquote .\par
+\par
+Next, open the src/app/header/header.component.css file and add:\par
+\par
+\par
+.nav-item\{\par
+    padding:2px;\par
+    margin-left: 7px;\par
+\}\par
+Copy\par
+Next, open the src/app/footer/footer.component.html file and add:\par
+\par
+<footer>\par
+  <p  class="text-xs-center">\'a9 Copyright 2019. All rights reserved.</p>\par
+</footer>\par
+Copy\par
+Open the src/app/footer/footer.component.css file and add:\par
+\par
+\par
+footer \{\par
+    position: absolute;\par
+    right: 0;\par
+    bottom: 0;\par
+    left: 0;\par
+    padding: 1rem;\par
+    text-align: center;\par
+\}\par
+Copy\par
+Next, open the src/app/app.component.html file and replace its contents with the following:\par
+\par
+<app-header></app-header>\par
+<router-outlet></router-outlet>\par
+<app-footer></app-footer>\par
+Copy\par
+We\rquote re creating an application shell by using the header and footer components which means that they will be present on every page of our application. The only part that will be changed is what will be inserted in the router outlet (check out \ldblquote The Application Shell\rdblquote  on the Angular website for more information).\par
+\par
+Adding A Bootstrap Jumbotron\par
+According to the Bootstrap docs:\par
+\par
+\ldblquote A Jumbotron is a lightweight, flexible component that can optionally extend the entire viewport to showcase key marketing messages on your site.\rdblquote\par
+Let\rquote s add a Jumbotron component to our home page. Open the src/app/home/home.component.html file and add:\par
+\par
+<div class="jumbotron" style="background-color: #fff; height: calc(95vh);">\par
+  <h1>Angular Bootstrap Demo</h1>\par
+  <p class="lead">\par
+    This demo shows how to integrate Bootstrap 4 with Angular 7  \par
+  </p>\par
+  <a class="btn btn-lg btn-primary" href="" role="button">View tutorial</a>\par
+</div>\par
+Copy\par
+The .jumbotron class is used to create a Bootstrap Jumbotron.\par
+\par
+Adding A List Component: Using A Bootstrap Table\par
+Now let\rquote s create a component-to-list data from the data service and use a Bootstrap 4 table to display tabular data.\par
+\par
+First, open the src/app/contact-list/contact-list.component.ts file and inject the data service then call the getContacts() method to get data when the component is initialized:\par
+\par
+import \{ Component, OnInit \} from '@angular/core';\par
+import \{ DataService \} from '../data.service';\par
+\par
+@Component(\{\par
+  selector: 'app-contact-list',\par
+  templateUrl: './contact-list.component.html',\par
+  styleUrls: ['./contact-list.component.css']\par
+\})\par
+export class ContactListComponent implements OnInit \{\par
+\par
+  contacts;\par
+  selectedContact;\par
+\par
+  constructor(public dataService: DataService) \{ \}\par
+\par
+  ngOnInit() \{\par
+    this.contacts = this.dataService.getContacts();    \par
+  \}\par
+  public selectContact(contact)\{\par
+    this.selectedContact = contact;\par
+  \}\par
+\}\par
+Copy\par
+We added two variables contactsand selectedContact which hold the set of contacts and the selected contact. And a selectContact() method which assigns the selected contact to the selectedContact variable.\par
+\par
+Open the src/app/contact-list/contact-list.component.html file and add:\par
+\par
+<div class="container" style="margin-top: 70px;">\par
+  <table class="table table-hover">\par
+    <thead>\par
+      <tr>\par
+        <th>#</th>\par
+        <th>Name</th>\par
+        <th>Email</th>\par
+        <th>Actions</th>\par
+      </tr>\par
+    </thead>\par
+    <tbody>\par
+      <tr *ngFor="let contact of contacts">\par
+\par
+        <td>\{\{ contact.id \}\}</td>\par
+        <td> \{\{ contact.name \}\}</td>\par
+        <td> \{\{ contact.email \}\}</td>\par
+        <td>\par
+          <button class="btn btn-primary" (click)="selectContact(contact)"> Show details</button>\par
+        </td>\par
+      </tr>\par
+    </tbody>\par
+  </table>\par
+  <div class="card text-center" *ngIf="selectedContact">\par
+      <div class="card-header">\par
+        # \{\{selectedContact.id\}\}\par
+      </div>\par
+      <div class="card-block">\par
+        <h4 class="card-title">\{\{selectedContact.name\}\}</h4>\par
+        <p class="card-text">\par
+          \{\{selectedContact.description\}\}\par
+        </p>    \par
+      </div>\par
+\par
+    </div>\par
+</div>\par
+Copy\par
+We simply loop through the contacts array and display each contact details and a button to select a contact. If the contact is selected, a Bootstrap 4 Card with more information will be displayed.\par
+\par
+This is the definition of a Card from Bootstrap 4 docs:\par
+\par
+\ldblquote A card is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options. If you\rquote re familiar with Bootstrap 3, cards replace our old panels, wells, and thumbnails. Similar functionality to those components is available as modifier classes for cards.\rdblquote\par
+We use the .table and .table-hover classes to create Bootstrap-styled tables, the .card, .card-block, .card-title and .card-text classes to create cards. (For more information, check out Tables and Cards.)\par
+\par
+Adding A Create Component: Using Bootstrap Form Controls And Classes\par
+Let\rquote s now add a form to our contact-create component. First, we need to import the FormsModule in our main application module. Open the src/app/app.module.ts file, import FormsModule from @angular/forms, and add it to the imports array:\par
+\par
+import \{ BrowserModule \} from '@angular/platform-browser';\par
+import \{ NgModule \} from '@angular/core';\par
+import \{ AppRoutingModule \} from './app-routing.module';\par
+import \{ FormsModule \} from '@angular/forms';\par
+\par
+/* ... */\par
+\par
+@NgModule(\{\par
+  declarations: [\par
+  /* ... */\par
+  ],\par
+  imports: [\par
+    BrowserModule,\par
+    AppRoutingModule,\par
+    FormsModule\par
+  ],\par
+  providers: [],\par
+  bootstrap: [AppComponent]\par
+\})\par
+export class AppModule \{ \}\par
+Copy\par
+Next, open the src/app/contact-create/contact-create.component.ts file and replace its contents with the following:\par
+\par
+import \{ Component, OnInit \} from '@angular/core';\par
+import \{ DataService \} from '../data.service';\par
+\par
+@Component(\{\par
+  selector: 'app-contact-create',\par
+  templateUrl: './contact-create.component.html',\par
+  styleUrls: ['./contact-create.component.css']\par
+\})\par
+export class ContactCreateComponent implements OnInit \{\par
+\par
+  contact : \{id, name, description, email\} = \{id: null, name: "", description: "", email: ""\};\par
+\par
+  constructor(public dataService: DataService) \{ \}\par
+\par
+  ngOnInit() \{\par
+  \}\par
+\par
+  createContact()\{\par
+    console.log(this.contact);\par
+    this.dataService.createContact(this.contact);\par
+    this.contact = \{id: null, name: "", description: "", email: ""\};\par
+\par
+  \}\par
+\}\par
+Copy\par
+Next, open the src/app/contact-create/contact-create.component.html file and add the following code:\par
+\par
+<div class="container" style="margin-top: 70px;">\par
+\par
+  <div class="row">\par
+\par
+    <div class="col-sm-8 offset-sm-2">\par
+\par
+      <div>\par
+        <form>\par
+          <div class="form-group">\par
+            <label for="id">ID</label>\par
+            <input [(ngModel)]="contact.id" type="text" name="id" class="form-control" id="id" aria-describedby="idHelp" placeholder="Enter ID">\par
+            <small id="idHelp" class="form-text text-muted">Enter your contact\rquote s ID</small>\par
+\par
+            <label for="name">Contact Name</label>\par
+            <input [(ngModel)]="contact.name" type="text" name="name" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Enter your name">\par
+            <small id="nameHelp" class="form-text text-muted">Enter your contact\rquote s name</small>\par
+\par
+            <label for="email">Contact Email</label>\par
+            <input [(ngModel)]="contact.email" type="text" name="email" class="form-control" id="email" aria-describedby="emailHelp"\par
+              placeholder="Enter your email">\par
+            <small id="nameHelp" class="form-text text-muted">Enter your contact\rquote s email</small>\par
+\par
+            <label for="description">Contact Description</label>\par
+            <textarea [(ngModel)]="contact.description" name="description" class="form-control" id="description" aria-describedby="descHelp">\par
+                      </textarea>\par
+            <small id="descHelp" class="form-text text-muted">Enter your contact\rquote s description</small>\par
+\par
+          </div>\par
+        </form>\par
+        <button class="btn btn-primary" (click)="createContact()">Create contact</button>\par
+      </div>\par
+    </div>\par
+  </div>\par
+</div>\par
+Copy\par
+We use the .form-group, .form-control classes to create a Bootstrap-styled form (check out \ldblquote Forms\rdblquote  for more information).\par
+\par
+We use the ngModel directive to bind the form fields to the components\rquote  variable. For data binding to properly work, you need to give each form field a name.\par
+\par
+Recommended reading: Managing Image Breakpoints With Angular by Tamas Piros\par
+\par
+Running The Angular Application\par
+At this step, let\rquote s run the application and see if everything works as expected. Head over to your terminal, make sure you are in the root folder of your project then run the following command:\par
+\par
+$ ng serve\par
+Copy\par
+A live-reload development server will be running from the {\field{\*\fldinst{HYPERLINK "http://localhost:4200"}}{\fldrslt{\ul\cf1 http://localhost:4200}}}\f0\fs22  address. Open your web browser and navigate to that address. You should see the following interface:\par
+\par
+Angular Bootstrap demo: Home page\par
+(Large preview)\par
+If you navigate to the Contacts page, you should see:\par
+\par
+Angular Bootstrap Demo: Contacts Page\par
+(Large preview)\par
+If you navigate to the \ldblquote Create contact\rdblquote  page, you should see:\par
+\par
+Angular Bootstrap Demo: Create contact page\par
+(Large preview)\par
+Conclusion\par
+In this tutorial, we\rquote ve seen how to create a simple Angular application with a Bootstrap interface. You can find the complete source code on GitHub and see the live example here.\par
+\par
+Smashing Editorial (dm, il)\par
+}
+ 
