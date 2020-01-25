@@ -1,0 +1,229 @@
+
+var popUp = function(){
+    
+    this.isDebug = false;
+    self = this;
+    
+    /*
+     * function name : sendToConsole();
+     * Used for debuging / prints message to console
+     * @param {string} message
+     * @returns {boolean}
+     */
+    this.sendToConsole = function(message){
+        if (this.isDebug) console.log('Debug = [' + message + '] \n');
+        return true;
+    };
+    
+    /*
+     * function name : setCookie()
+     * sets cookie to remember user decision
+     * expires after 1 year
+     * @returns {boolean} 
+     */
+    this.setCookie = function(){
+        var future = new Date();
+    
+        future.setDate(future.getTime() + (365*24*60*60*1000));
+        document.cookie = "popupName=popupCookie;expires=" + future.toUTCString() + ";";
+        this.sendToConsole('Cookie \'popupName\' is set.');
+        
+        return true;
+    };
+    
+    /*
+     * function name : getCookie()
+     * checks if cookie 'popupName' is set
+     * @returns {boolean} true|false
+     */
+    this.getCookie = function(){
+        this.sendToConsole('Checking for cookies.');
+        var cookieValues = decodeURIComponent(document.cookie).split(';');
+
+        for (var i = 0; i < cookieValues.length; i++)
+        {
+            if (cookieValues[i].indexOf('popupName') > -1) return true;
+        }
+        this.sendToConsole('No cookie found.');
+        
+        return false;   
+    };
+    
+    /*
+     * function name : redirectTo()
+     * redirects to url
+     * @param {string} url 
+     */
+    this.redirectTo = function(url){
+        this.setCookie();
+        this.sendToConsole('Redirecting to -> ' + url);
+        window.location.href = url;
+    };
+    
+    /*
+     * function name : openPopup()
+     * creates the popup html and content after a series of checks
+     * @param {object} obj
+     * @returns {boolean}  
+     */
+    this.openPopup = function(obj){
+        var 
+            //hrefAttribute = (obj.currentTarget.getAttribute('href') === null ) ? (obj.target.getAttribute('href') === null) ? null : obj.target.getAttribute('href') : null,
+            hrefAttribute = obj.target.getAttribute('href'),
+            message = '';
+    
+        if (hrefAttribute === null){
+            hrefAttribute = obj.currentTarget.getAttribute('href');
+        }
+        this.sendToConsole(obj.target);
+        //check if cookie exists 
+        if (this.getCookie()) return false;
+        //checking if clicked element is a link
+        if ( hrefAttribute === null) return false;
+        //close popup if already opened
+        if (document.getElementById('redirectPopup')) document.getElementById('redirectPopup').remove();
+    
+        this.sendToConsole('Itializing popUp.');
+        
+        var redirectObj = {
+            redirectPage: '',
+            extraText: '',
+            toTarget: ''
+        };
+        
+        this.sendToConsole(obj.target.text + ' text ' + document.location.host.indexOf('crystalgraphicsimages') + 'ccc');
+        
+        //if (document.location.host.indexOf('crystalgraphicsimages') > -1)
+
+        if (document.location.host.indexOf('crystalgraphicsimages') > -1 || document.location.host.indexOf('dev.crystalcraphics') > -1)
+        {
+            redirectObj.redirectPage = 'CrystalGraphics.com';
+            redirectObj.extraText = ' for PowerPoint ';
+        }
+        else
+        {
+            redirectObj.redirectPage = 'CrystalGraphicsImages.com';
+            redirectObj.extraText = '';
+        }
+        
+        if (typeof obj.target.text !== 'undefined') redirectObj.toTarget =  obj.target.text.indexOf('Templates') > -1 ? 'Templates ' : obj.target.text;
+        
+        message = 'View ' + redirectObj.toTarget + redirectObj.extraText + ' on ' + redirectObj.redirectPage + ' now?';
+        
+        this.sendToConsole('Redirect page set to -> ' + redirectObj.redirectPage);
+        var 
+            strT = obj.target.toString(),
+            title = redirectObj.toTarget + redirectObj.extraText;
+    
+        if (hrefAttribute.match(/\/cgibin\/cart\./)){
+            message = ' Add this to your shopping cart on CrystalGraphics.com?';
+            title = "Add to Cart";
+        }//this.sendToConsole('cart found in target string');
+       
+        if (hrefAttribute.match(/mode=view/)) {
+            message = 'View your shopping cart on CrystalGraphics.com?';
+            title = 'Shopping Cart';
+        }
+       
+        //creating html content of popup
+        var popupHtml = '';
+
+        popupHtml += '<div id="redirectContainer">';
+        popupHtml +=    '<div class="alert_message popup-alert">';
+        popupHtml +=        '<div class="alert_message_text">';
+        popupHtml +=            '<div class="modal-dialog">';
+        popupHtml +=                '<div class="modal-content">';
+        popupHtml +=                    '<div class="modal-header">';
+        popupHtml +=                        '<button aria-label="Close" data-dismiss="modal" class="close close_dialog_btn" type="button" id="close_dialog_btn_rario_1" onclick="self.closePopup()"><span aria-hidden="true">&#10006</span></button>';
+        popupHtml +=                        '<h4 class="modal-title">' + title + '</h4>';
+        popupHtml +=                     '</div>';
+        popupHtml +=                     '<div class="modal-body">' + message + '</div>';
+        popupHtml +=                     '<div class="modal-footer">';
+        popupHtml +=                        '<button class="btn btn-primary" id="okButtonR" onclick="self.redirectTo(\'' + hrefAttribute + '\')" type="button">OK</button>';
+        popupHtml +=                        '<button data-dismiss="modal" class="btn btn-primary" type="button" id="designer_subscriber_alert_cancel" onclick="self.closePopup()">Cancel</button>';
+
+        popupHtml +=                    '</div>';
+        popupHtml +=                '</div>';
+        popupHtml +=            '</div>';
+        popupHtml +=        '</div>';
+        popupHtml +=    '</div>';
+        popupHtml += '</div>';
+
+        //insert html to body
+        document.body.insertAdjacentHTML('beforeend',popupHtml);
+        
+        this.sendToConsole('Popup HTML created and inserted into body.');
+        
+        //delay animation
+        setTimeout(function(){
+            document.getElementById("redirectContainer").classList.add("fade-in");
+         },0.2);
+
+        document.getElementById("okButtonR").focus();
+
+        this.sendToConsole('Event listener set for enter key.');
+        window.addEventListener('keypress', function(e){
+            e.preventDefault();
+            var key = e.keyCode || e.which;
+            if (key === 13) this.redirectTo(hrefAttribute);
+
+        },false);
+
+        this.sendToConsole('Preventing object default.');
+        //stop link from redirecting to page
+        obj.preventDefault();
+    };
+    
+    /*
+     * function name : closePopup()
+     * removes popup from the body
+     */
+    this.closePopup = function(){
+        
+        this.sendToConsole('Closing popup.');
+        var popup =  document.getElementById("redirectContainer");
+    
+        setTimeout(function(){
+           document.getElementsByTagName("BODY")[0].removeChild(popup);
+         },0.2);
+    };
+    
+    /*
+     * function name : run
+     * sets event listeners to the 
+     */
+    this.run = function(){
+        self.sendToConsole('Setting event listeners to elements');
+        //self.sendToConsole('context = ' + this);
+        var elements = [
+            document.getElementById("hRedirects"),
+            document.getElementById("fRedirects"),
+            document.getElementById("shoppingCartItem"),
+            document.getElementById("add_to_cart_btn_subscription"),
+            document.getElementById("add_to_cart_btn_photo_1"),
+            document.getElementById("add_to_cart_btn_photo_2"),
+            document.getElementById("add_to_cart_btn_photo_subscript")
+            
+        ];
+        i = 0;
+        elements.forEach(function(element){
+            //self.sendToConsole(element + " ---- " + elements.length + ' -- ' + i++);
+            if (element != null)
+            {
+         
+                element.addEventListener('click',function(e){
+                    //e.target.setAttribute("href",element.getAttribute('href'));
+                    self.openPopup(e);    
+                });
+            }
+        });   
+    };
+};
+
+window.onload = function(){
+    var popupApp = new popUp();
+
+    popupApp.sendToConsole('Test message sent to console');
+    popupApp.run();
+ 
+};
