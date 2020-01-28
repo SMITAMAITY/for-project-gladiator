@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Step registration form</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+</head>
+<body>
+ 
+    <div class="title">
+      <!-- <i class="fas fa-user-circle"></i> -->
+      <h1>NGO REGISTRATION</h1>
+    </div>
+    <div class="info">
+  
+<div id="form">
+  <form [formGroup]="addForm" (ngSubmit)="addCustomer()">
+    <div class="div1">
+     
+       <table>
+    <h2>NGO DETAILS</h2>
+  
+  
+    
+      <tr>
+        <td>Organization Name :  </td>
+      <td><input type="text" name="name1" placeholder="Enter Organization name" ></td> 
+      </tr>
+    
+      <tr><td>Head of the Organization :</td>
+      <td>
+      <input type="text" name="name" placeholder="Enter Head of the Organization" ></td>
+      </tr>
+
+      
+
+      <tr><td>Designation :</td>
+        <td><input type="text" name="desig" placeholder="Enter Applicant's Designation" ></td></tr>
+
+      <tr>
+      <td><label>Email :</label></td>
+      <td><input type="Email" name="mail"  required></td>
+      </tr>
+
+      <tr>
+      <td><label>Website :</label></td>
+      <td><input type="Email" name="mail"  required></td>
+      </tr>
+
+      <tr>
+      <td><label>Contact :</label></td>
+      <td><input type="tel" name="phone" pattern="[0-9]{10}" required></td>
+      </tr>
+
+    <tr>
+      <td><label>Address:</label></td>
+      <td><textarea rows="5" cols="30"></textarea></td>
+    </tr>
+    </table>
+    <table>
+
+
+    <h2>NGO BANK DETAILS</h2>
+
+      <tr>
+        <td>Account Holder's Name :  </td>
+      <td><input type="text" name="name1" formcontrolname="AccountHolder"></td> 
+      </tr>
+    
+      <tr><td>Account Number:</td>
+      <td>
+      <input type="text" name="name" formcontrolname="AccountHolder"></td>
+      </tr>
+
+      
+
+      <tr><td>Bank Name :</td>
+        <td><input type="text" name="bn" formcontrolname="AccountHolder" ></td></tr>
+
+      <tr>
+      <td><label>Branch Name:</label></td>
+      <td><input type="text" name="bn1"  formcontrolname="BranchName"></td>
+      </tr>
+
+      <tr>
+      <td><label>Branch City:</label></td>
+      <td><input type="text" name="mail"  formcontrolname="BranchCity"></td>
+      </tr>
+
+      <tr>
+      <td><label>IFSC Code :</label></td>
+      <td><input type="text" name="ifsc" formcontrolname="IFSCCode"></td>
+      </tr>
+
+    <p>Project Related Information</p>
+
+      <tr>
+        <td>Project Incharger Name :  </td>
+      <td><input type="text" name="name1" formcontrolname="AccountHolder"></td> 
+      </tr>
+    
+      <tr><td>Project Currently Working/ is planning to work on</td>
+      <td>
+      <input type="text" name="name" formcontrolname="AccountHolder"></td>
+      </tr>
+
+    <tr>
+        <td><button type="submit" href="/">Submit</button></td>
+      </tr>
+  </table>
+    </div>
+
+
+</div>
+  </form>
+  </div>
+</div>
+
+
+
+
